@@ -1,4 +1,4 @@
-# Docker + Node.js + PHP Development Setup
+# Docker Development Environment Setup
 
 This document contains step-by-step setup instructions for using Docker Compose to run Node.js (Next.js and Express.js with TypeScript) and PHP (for vanilla PHP and Laravel) in isolated environments.
 
