@@ -180,10 +180,17 @@ docker-compose down
 * Restart: `docker-compose up`
 
 ### 🚀 Create Project
-
+* Bring up docker and login bash
 ```sh
 docker-compose exec phpapp bash
-composer create-project --prefer-dist laravel/laravel my-laravel-app
+```
+
+* While in docker bash, install `npm` and `node` from their official website
+* Create Laravel project using composer
+
+```sh
+composer create-project --prefer-dist "laravel/laravel" my-laravel-app
+# composer create-project --prefer-dist "laravel/laravel:^11.0" my-laravel-app # For older version
 exit
 ```
 
