@@ -215,7 +215,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - postgres_shared_network
@@ -229,7 +229,7 @@ networks:
 ### 🔍 Notes
 
 * Default port: `5432`
-* Volume: `./data`
+* Volume: `./postgres-data`
 * Hostname: `postgres`
 * Network: `postgres_external_network`
 
@@ -243,23 +243,21 @@ networks:
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_db
+    container_name: mysql_database
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: app_db
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_pass
     ports:
       - "3306:3306"
     volumes:
       - ./mysql-data:/var/lib/mysql
     restart: unless-stopped
     networks:
-      - mysql_external_network
+      - mysql_shared_network
 
 networks:
-  mysql_external_network:
-    external: true
+  mysql_shared_network:
+    name: mysql_external_network
+    driver: bridge
 ```
 
 ### 🔍 Notes
@@ -286,11 +284,12 @@ services:
       - ./redis-data:/data
     restart: unless-stopped
     networks:
-      - redis_external_network
+      - redis_shared_network
 
 networks:
-  redis_external_network:
-    external: true
+  redis_shared_network:
+    name: redis_external_network
+    driver: bridge
 ```
 
 ### 🔍 Notes
@@ -319,11 +318,12 @@ services:
       - nodeapp
       - phpapp
     networks:
-      - nginx_external_network
+      - nginx_shared_network
 
 networks:
-  nginx_external_network:
-    external: true
+  nginx_shared_network:
+    name: redis_external_network
+    driver: bridge
 ```
 
 ### 🧰 Sample `nginx.conf`
