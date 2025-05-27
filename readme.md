@@ -138,7 +138,7 @@ services:
     ports:
       - "8000:8000"
       - "8080:8080"
-    # user: "1000:1000"
+    user: "1000:1000"
     tty: true
 ```
 
@@ -169,7 +169,6 @@ docker-compose down
 
 ### ⚙️ Final Steps
 
-* Uncomment `user: "1000:1000"` in `docker-compose.yml`
 * Uncomment Laravel command:
 
   ```yaml
