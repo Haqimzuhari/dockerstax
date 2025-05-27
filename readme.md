@@ -126,19 +126,20 @@ Update `package.json`:
 
 ```yaml
 services:
-  phpapp:
+  php:
     image: php:8.2-cli
-    container_name: php-app
+    container_name: php-environment
     working_dir: /app
     volumes:
       - .:/app
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
-    tty: true
-    # command: php artisan serve --host=0.0.0.0 --port=8000
-    # command: php -S 0.0.0.0:8080
     ports:
       - "8000:8000"
       - "8080:8080"
+    # user: "1000:1000"
+    tty: true
+    # command: php artisan serve --host=0.0.0.0 --port=8000
+    # command: php -S 0.0.0.0:8080
 ```
 
 ---
