@@ -1,18 +1,28 @@
-# Docker + Node.js + PHP Development Setup
+# 🐳 Dockerstax - Your Docker Development Environment
 
-This document contains step-by-step setup instructions for using Docker Compose to run Node.js (Next.js and Express.js with TypeScript) and PHP (for vanilla PHP and Laravel) in isolated environments.
+> A modern and modular Docker Compose setup for fullstack development with Node.js, PHP, PostgreSQL, MySQL, Redis, and Nginx.
+
+
+## 📚 Table of Contents
+
+* [🔧 Docker Compose for Node.js](#-docker-compose-for-nodejs)
+* [📦 A. Next.js Setup](#-a-nextjs-setup)
+* [📦 B. Express.js with TypeScript Setup](#-b-expressjs-with-typescript-setup)
+* [🐘 Docker Compose for PHP / Laravel](#-docker-compose-for-php--laravel)
+* [🐘 PostgreSQL Setup](#-postgresql-setup)
+* [💼 MySQL Setup](#-mysql-setup)
+* [🧠 Redis Setup](#-redis-setup)
+* [🌐 Nginx Reverse Proxy Setup](#-nginx-reverse-proxy-setup)
 
 ---
 
 ## 🔧 Docker Compose for Node.js
 
-Base image: `node:22-alpine`
+**Base image:** `node:22-alpine`
 
-### ✅ Shared Docker Compose Base (for Next.js and Express.js)
+### ✅ Shared Node Service (Next.js or Express.js)
 
 ```yaml
-docker-compose.yml:
-
 version: '3.8'
 
 services:
@@ -24,110 +34,62 @@ services:
       - .:/app
     user: "1000:1000"
     tty: true
-    # command: npm run dev  # Uncomment when ready to run
+    # command: npm run dev
     ports:
       - "3000:3000"
 ```
 
-### 📦 A. Next.js Setup
+---
 
-#### 1. Bring up and build the container
+## 📦 A. Next.js Setup
+
+### 🧰 Setup
 
 ```sh
 docker-compose up -d --build
-```
-
-#### 2. Enter the container as non-root user (sh shell)
-
-```sh
 docker-compose exec nodeapp sh
-```
-
-#### 3. Verify Node.js and npm versions
-
-```sh
 node -v
 npm -v
-```
-
-#### 4. Create a new Next.js project (from [nextjs.org](https://nextjs.org/docs/getting-started/installation))
-
-```sh
 npx create-next-app@latest
-```
-
-- When prompted to create a new folder, proceed (e.g., `my-app`).
-
-#### 5. Exit the container
-
-```sh
 exit
-```
-
-#### 6. Bring down the container
-
-```sh
 docker-compose down
-```
-
-#### 7. Move Next.js files. You can move manually or follow below command
-
-```sh
 mv my-app/* ./
 mv my-app/.* ./ 2>/dev/null || true
 rm -rf my-app
 ```
 
-#### 8. Uncomment `command: npm run dev` in docker-compose.yml
+### ⚙️ Final Steps
 
-#### 9. Bring up Docker Compose again
+* Uncomment `command: npm run dev` in your `docker-compose.yml`
+* Restart: `docker-compose up`
 
-```sh
-docker-compose up
-```
-
-#### 10. Access Next.js app at:
+### 🔍 Access
 
 [http://localhost:3000](http://localhost:3000)
 
 ---
 
-### 📦 B. Express.js with TypeScript Setup
+## 📦 B. Express.js with TypeScript Setup
 
-You can use the same Docker Compose setup as for Next.js, but you must change the port number (e.g., use 4000) to avoid conflicts. Next.js and Express.js cannot share the same port.
+> ⚠️ Change the port from 3000 to 4000 to avoid conflict with Next.js.
 
-#### 1. Bring up and build the container
+### 🧰 Setup
 
 ```sh
 docker-compose up -d --build
-```
-
-#### 2. Enter the container as non-root user (sh shell)
-
-```sh
 docker-compose exec nodeapp sh
-```
-
-#### 3. Verify Node.js and npm versions
-
-```sh
 node -v
 npm -v
-```
 
-#### 4. Create Express.js app with TypeScript
-
-```sh
 npm init -y
 npm install express
 npm install -D typescript ts-node @types/node @types/express
 npx tsc --init
 ```
 
-#### 5. Create files:
+Create `index.ts`:
 
 ```ts
-// index.ts
 import express from 'express';
 const app = express();
 const port = 3000;
@@ -135,7 +97,7 @@ app.get('/', (req, res) => res.send('Hello from Express + TypeScript!'));
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 ```
 
-#### 6. Update package.json
+Update `package.json`:
 
 ```json
 "scripts": {
@@ -143,43 +105,26 @@ app.listen(port, () => console.log(`Server running on http://localhost:${port}`)
 }
 ```
 
-#### 7. Exit the container
+### ⚙️ Final Steps
 
-```sh
-exit
-```
+* Exit the container: `exit`
+* Stop: `docker-compose down`
+* Uncomment `command: npm run dev`
+* Restart: `docker-compose up`
 
-#### 8. Bring down the container
+### 🔍 Access
 
-```sh
-docker-compose down
-```
-
-#### 9. Uncomment `command: npm run dev` in docker-compose.yml
-
-#### 10. Bring up Docker Compose again
-
-```sh
-docker-compose up
-```
-
-#### 11. Access Express app at:
-
-[http://localhost:4000](http://localhost:3000)
+[http://localhost:4000](http://localhost:4000)
 
 ---
 
 ## 🐘 Docker Compose for PHP / Laravel
 
-Base image: `php:8.2-cli`
+**Base image:** `php:8.2-cli`
 
-### ✅ PHP Docker Compose (Minimal)
+### ✅ Minimal PHP Service
 
 ```yaml
-docker-compose.yml:
-
-version: '3.8'
-
 services:
   phpapp:
     image: php:8.2-cli
@@ -188,163 +133,60 @@ services:
     volumes:
       - .:/app
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
-    # user: "1000:1000"  # Uncomment after installing extensions
     tty: true
-    # command: php artisan serve --host=0.0.0.0 --port=8000  # Laravel dev server
-    # command: php -S 0.0.0.0:8080  # Vanilla PHP dev server
+    # command: php artisan serve --host=0.0.0.0 --port=8000
+    # command: php -S 0.0.0.0:8080
     ports:
       - "8000:8000"
       - "8080:8080"
 ```
 
-### 🔧 Initial PHP Setup
+---
 
-#### 1. Build and enter container
+## 📦 Laravel Setup
+
+### 🧰 Setup
 
 ```sh
 docker-compose up -d --build
 docker-compose exec phpapp bash
-```
 
-#### 2. Add user and group 1000 inside container
+# Create non-root user
+addgroup --gid 1000 devgroup
+adduser --uid 1000 --gid 1000 --disabled-password devuser
 
-```sh
-groupadd -g 1000 devgroup
-useradd -u 1000 -g devgroup -m devuser
-```
-
-#### 3. Install required tools
-
-```sh
+# Install tools and Composer
 apt update && apt install -y curl zip unzip
-```
-
-#### 4. Install Composer (from [getcomposer.org](https://getcomposer.org/download/))
-
-```sh
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
-```
 
-#### 5. Install PHP extensions needed for Laravel
-
-```sh
+# Install PHP extensions
 apt install -y libzip-dev libpng-dev libonig-dev libxml2-dev
 
 docker-php-ext-install pdo pdo_mysql zip mbstring tokenizer xml bcmath gd fileinfo
-```
-
-#### 6. Exit
-
-```sh
 exit
 docker-compose down
 ```
 
-Now your PHP environment is ready and can be used with a non-root user.
+### ⚙️ Final Steps
 
-Uncomment the user section in `docker-compose.yml`:
+* Uncomment `user: "1000:1000"` in `docker-compose.yml`
+* Uncomment Laravel command:
 
-```yaml
-user: "1000:1000"
-```
+  ```yaml
+  command: php artisan serve --host=0.0.0.0 --port=8000
+  ```
+* Restart: `docker-compose up`
 
----
-
-### 🧩 Add custom `php.ini`
-
-Create `php.ini`:
-
-```ini
-memory_limit = 512M
-upload_max_filesize = 64M
-post_max_size = 64M
-max_execution_time = 180
-date.timezone = Asia/Kuala_Lumpur
-```
-
-Now you can start a vanilla PHP project.
-
-Uncomment the vanilla PHP command in `docker-compose.yml`:
-
-```yaml
-command: php -S 0.0.0.0:8080
-```
-
----
-
-### 🚀 Laravel Setup
-
-#### 1. Uncomment `user: "1000:1000"` in docker-compose.yml
-
-#### 2. Start container again
-
-```sh
-docker-compose up -d
-```
-
-#### 3. Login as non-root user
-
-Uncomment the user section in `docker-compose.yml`:
-
-```
-user: "1000:1000"
-```
-
-Bring up docker
+### 🚀 Create Project
 
 ```sh
 docker-compose exec phpapp bash
-```
-
-#### 4. Install Node.js and npm using NVM
-
-(From [https://github.com/nvm-sh/nvm#install--update-script](https://github.com/nvm-sh/nvm#install--update-script))
-
-```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-. ~/.nvm/nvm.sh
-nvm install --lts
-```
-
-#### 5. Verify PHP extensions
-
-```sh
-php -m
-```
-
-Ensure the required Laravel extensions are listed.
-
-#### 6. Create Laravel project
-
-**DO NOT** install Laravel and **DO NOT** run
-
-```
-laravel new my-laravel-app
-```
-
-Instead, use composer to begin Laravel project
-
-Lates version
-
-```sh
-composer create-project --prefer-dist "laravel/laravel" my-laravel-app
-```
-
-Older version
-
-```
-composer create-project --prefer-dist "laravel/laravel:^10.0" my-laravel-app
-```
-
-#### 7. Exit and bring down container
-
-```sh
+composer create-project --prefer-dist laravel/laravel my-laravel-app
 exit
-docker-compose down
 ```
 
-#### 8. Move Laravel files into working directory manually or follow below command
+Move files:
 
 ```sh
 mv my-laravel-app/* ./
@@ -352,22 +194,172 @@ mv my-laravel-app/.* ./ 2>/dev/null || true
 rm -rf my-laravel-app
 ```
 
-#### 9. Uncomment Laravel `command:` section
+### 🔍 Access
 
-```yaml
-# command: php artisan serve --host=0.0.0.0 --port=8000
-```
-
-#### 10. Start development
-
-```sh
-docker-compose up
-```
-
-Visit: [http://localhost:8000](http://localhost:8000)
-
-**⚠️ Do not delete the PHP image unless you're ready to reinstall everything.**
+[http://localhost:8000](http://localhost:8000)
 
 ---
 
-Let me know if you need optional MySQL, Redis, or Nginx integration.
+## 🐘 PostgreSQL Setup
+
+### ✅ Docker Compose Service
+
+```yaml
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - postgres_external_network
+
+networks:
+  postgres_external_network:
+    external: true
+```
+
+### 🔍 Notes
+
+* Default port: `5432`
+* Volume: `./data`
+* Hostname: `postgres`
+* Network: `postgres_external_network`
+
+---
+
+## 💼 MySQL Setup
+
+### ✅ Docker Compose Service
+
+```yaml
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - mysql_external_network
+
+networks:
+  mysql_external_network:
+    external: true
+```
+
+### 🔍 Notes
+
+* Default port: `3306`
+* Hostname: `mysql`
+* Network: `mysql_external_network`
+* Volume: `./mysql-data`
+
+---
+
+## 🧠 Redis Setup
+
+### ✅ Docker Compose Service
+
+```yaml
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    restart: unless-stopped
+    networks:
+      - redis_external_network
+
+networks:
+  redis_external_network:
+    external: true
+```
+
+### 🔍 Notes
+
+* Default port: `6379`
+* Hostname: `redis`
+* Network: `redis_external_network`
+* Volume: `./redis-data`
+
+---
+
+## 🌐 Nginx Reverse Proxy Setup
+
+### ✅ Docker Compose Service
+
+```yaml
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - nodeapp
+      - phpapp
+    networks:
+      - nginx_external_network
+
+networks:
+  nginx_external_network:
+    external: true
+```
+
+### 🧰 Sample `nginx.conf`
+
+```nginx
+worker_processes 1;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  server {
+    listen 80;
+
+    location /next {
+      proxy_pass http://nodeapp:3000;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /laravel {
+      proxy_pass http://phpapp:8000;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+    }
+  }
+}
+```
+
+### 🔍 Access
+
+* Next.js: [http://localhost/next](http://localhost/next)
+* Laravel: [http://localhost/laravel](http://localhost/laravel)
+
+> 💡 Make sure all services are attached to their respective external networks.
