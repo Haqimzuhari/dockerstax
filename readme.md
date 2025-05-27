@@ -369,5 +369,3 @@ Visit: [http://localhost:8000](http://localhost:8000)
 **⚠️ Do not delete the PHP image unless you're ready to reinstall everything.**
 
 ---
-
-Let me know if you need optional MySQL, Redis, or Nginx integration.
