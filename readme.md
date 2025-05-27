@@ -157,13 +157,11 @@ addgroup --gid 1000 devgroup
 adduser --uid 1000 --gid 1000 --disabled-password devuser
 
 # Install tools and Composer
-apt update && apt install -y curl zip unzip
+apt update && apt install -y curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
 # Install PHP extensions
-apt install -y libzip-dev libpng-dev libonig-dev libxml2-dev
-
 docker-php-ext-install pdo pdo_mysql zip mbstring tokenizer xml bcmath gd fileinfo
 exit
 docker-compose down
