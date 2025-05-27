@@ -208,7 +208,7 @@ rm -rf my-laravel-app
 services:
   postgres:
     image: postgres:15
-    container_name: postgres_db
+    container_name: postgres_database
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: secret
@@ -218,11 +218,12 @@ services:
       - ./data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
-      - postgres_external_network
+      - postgres_shared_network
 
 networks:
-  postgres_external_network:
-    external: true
+  postgres_shared_network:
+    name: postgres_external_network
+    driver: bridge
 ```
 
 ### 🔍 Notes
