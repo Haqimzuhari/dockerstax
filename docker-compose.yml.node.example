@@ -1,0 +1,20 @@
+services:
+  app:
+    image: node:22-alpine
+    container_name: node_environment
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    user: "1000:1000"
+    # command: ["npm", "run", "dev"]
+    restart: "always"
+    tty: true
+    # networks:
+    #   - network_name
+# networks:
+#   network_name:
+#     driver: bridge
+#   some_other_network_name:
+#     external: true

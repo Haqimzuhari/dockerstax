@@ -1,0 +1,14 @@
+services:
+    appl:
+        image: php:8.2-cli
+        container_name: php_environment
+        working_dir: /appl
+        volumes:
+            - .:/appl
+            - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+        ports:
+            - "8000:8000"
+        # user: "1000:1000"
+        tty: true
+        # command: php artisan serve --host=0.0.0.0 --port=8000
+        # command: php -S 0.0.0.0:8080
