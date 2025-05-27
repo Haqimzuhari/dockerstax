@@ -26,17 +26,17 @@
 version: '3.8'
 
 services:
-  nodeapp:
+  nodejs:
     image: node:22-alpine
-    container_name: node-app
+    container_name: node_environment
     working_dir: /app
     volumes:
       - .:/app
-    user: "1000:1000"
-    tty: true
     # command: npm run dev
     ports:
       - "3000:3000"
+    user: "1000:1000"
+    tty: true
 ```
 
 ---
@@ -128,18 +128,18 @@ Update `package.json`:
 services:
   php:
     image: php:8.2-cli
-    container_name: php-environment
+    container_name: php_environment
     working_dir: /app
     volumes:
       - .:/app
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+    # command: php artisan serve --host=0.0.0.0 --port=8000
+    # command: php -S 0.0.0.0:8080
     ports:
       - "8000:8000"
       - "8080:8080"
     # user: "1000:1000"
     tty: true
-    # command: php artisan serve --host=0.0.0.0 --port=8000
-    # command: php -S 0.0.0.0:8080
 ```
 
 ---
