@@ -150,7 +150,9 @@ services:
 
 ```sh
 docker-compose up -d --build
-docker-compose exec phpapp bash
+
+# Login as root user
+docker-compose exec --user root phpapp bash
 
 # Create non-root user
 addgroup --gid 1000 devgroup
